@@ -1,0 +1,26 @@
+Package: socr
+Title: A framework for modeling soccer data
+Version: 0.0.0.9000
+Authors@R:
+    person(given = "George",
+           family = "Wood",
+           role = c("aut", "cre"),
+           email = "georgebwood@gmail.com")
+Description: Provides a standardized framework for modeling tracking and
+    event data in soccer via coercion to 'position' and 'action' class objects.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
+Imports:
+    data.table,
+    glue,
+    Matrix,
+    mvtnorm,
+    pillar,
+    purrr,
+    rlang,
+    vctrs
+Depends:
+    R (>= 2.10)
