@@ -45,7 +45,7 @@ print(trk)
 
 # coerce to a position object
 p <- as_position(trk[time == 10])
-print(p)
+print(p, n = 5)
 
 # calculate displacement between players
 displacement(p,
