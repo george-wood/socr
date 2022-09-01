@@ -21,9 +21,6 @@ Install the development version of socr:
 devtools::install_github("george-wood/socr")
 ```
 
-(Please note that installing won’t work while this repository is
-private.)
-
 ## Usage
 
 An example using the [Metrica Sports sample tracking
@@ -54,14 +51,19 @@ print(trk)
 
 # coerce to a position object
 p <- as_position(trk[time == 10])
-print(p, n = 5)
+print(p)
 #> <position[23]>
 #> t: 10.00 e: ball <ball> xy: 41.0, 78.0    
 #> t: 10.00 e: player1 <home> xy: 38.1, 76.0 
 #> t: 10.00 e: player10 <home> xy: 48.4, 55.6
 #> t: 10.00 e: player11 <home> xy: 5.0, 40.1 
 #> t: 10.00 e: player15 <away> xy: 57.6, 36.1
-#> ... with 18 more positions
+#> t: 10.00 e: player16 <away> xy: 60.8, 46.6
+#> t: 10.00 e: player17 <away> xy: 56.4, 75.1
+#> t: 10.00 e: player18 <away> xy: 29.4, 60.9
+#> t: 10.00 e: player19 <away> xy: 42.4, 43.5
+#> t: 10.00 e: player2 <home> xy: 27.0, 61.6 
+#> ... with 13 more positions
 
 # calculate displacement between players
 displacement(p,
