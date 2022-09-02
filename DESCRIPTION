@@ -1,5 +1,5 @@
 Package: socr
-Title: A framework for modeling soccer data
+Title: A framework for modeling soccer tracking and event data
 Version: 0.0.0.9000
 Authors@R:
     person(given = "George",

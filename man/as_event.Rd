@@ -14,14 +14,10 @@ as_event(data, ...)
   data,
   period = "period",
   team = "team",
-  entity_start = "entity_start",
-  entity_end = "entity_end",
-  time_start = "time_start",
-  time_end = "time_end",
-  x_start = "x_start",
-  x_end = "x_end",
-  y_start = "y_start",
-  y_end = "y_end",
+  entity = c("entity_start", "entity_end"),
+  time = c("time_start", "time_end"),
+  x = c("x_start", "x_end"),
+  y = c("y_start", "y_end"),
   type = "type",
   subtype = "subtype",
   ...
@@ -33,29 +29,22 @@ coerced to a \code{data.table}.}
 
 \item{...}{Unused, for extensibility.}
 
-\item{period}{Name of column denoting the period.}
+\item{period}{A character vector denoting the period.}
 
-\item{team}{Name of column denoting the team.}
+\item{team}{A character vector denoting the team.}
 
-\item{entity_start}{Name of column denoting entity starting event.}
+\item{entity}{A character vector of variables denoting the entity
+that started and ended an event.}
 
-\item{entity_end}{Name of column denoting entity ending event.}
+\item{time}{A character vector of variables denoting the times that
+an event started and ended.}
 
-\item{time_start}{Name of column denoting time that event started.}
+\item{x}{A character vector of variables denoting the location that
+an event started and ended in the y dimension.}
 
-\item{time_end}{Name of column denoting time that event ended.}
+\item{type}{A character vector denoting the event type.}
 
-\item{x_start}{Name of column denoting start position in x dimension.}
-
-\item{x_end}{Name of column denoting end position in x dimension.}
-
-\item{y_start}{Name of column denoting start position in y dimension.}
-
-\item{y_end}{Name of column denoting end position in y dimension.}
-
-\item{type}{Event type, e.g. "set piece".}
-
-\item{subtype}{Event subtype, e.g. "kick off".}
+\item{subtype}{A character vector denoting the event subtype.}
 }
 \value{
 An event data.table

@@ -6,6 +6,11 @@
 
 "_PACKAGE"
 
-utils::globalVariables(c("time", "entity"))
+utils::globalVariables(
+  c("time", "time_start", "time_end",
+    "entity", "entity_start", "entity_end",
+    "x_start", "x_end",
+    "y_start", "y_end")
+)
 
 NULL

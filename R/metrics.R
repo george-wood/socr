@@ -62,13 +62,19 @@ displacement.position <- function(p, from = NULL, to = NULL) {
       )
 
     # x, y displacement components
+    self <- identical(from, to) & vec_size(from) == 1
+
     z <- lapply(
       list("x", "y"),
       function(x)
         simplify2array(
           lapply(
-            s,
-            function(z) outer(z[, x], z[, x], `-`)[from, to, drop = FALSE]
+            s, function(z) {
+              if (self)
+                outer(z[, x], z[, x], `-`)
+              else
+                outer(z[, x], z[, x], `-`)[from, to, drop = FALSE]
+            }
           )
         )
     )

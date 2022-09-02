@@ -16,18 +16,18 @@ is_event <- function(data) {
 #'
 #' @param data A data frame, list, matrix, or other object that could be
 #' coerced to a `data.table`.
-#' @param period Name of column denoting the period.
-#' @param team Name of column denoting the team.
-#' @param entity_start Name of column denoting entity starting event.
-#' @param entity_end Name of column denoting entity ending event.
-#' @param time_start Name of column denoting time that event started.
-#' @param time_end Name of column denoting time that event ended.
-#' @param x_start Name of column denoting start position in x dimension.
-#' @param x_end Name of column denoting end position in x dimension.
-#' @param y_start Name of column denoting start position in y dimension.
-#' @param y_end Name of column denoting end position in y dimension.
-#' @param type Event type, e.g. "set piece".
-#' @param subtype Event subtype, e.g. "kick off".
+#' @param period A character vector denoting the period.
+#' @param team A character vector denoting the team.
+#' @param entity A character vector of variables denoting the entity
+#' that started and ended an event.
+#' @param time A character vector of variables denoting the times that
+#' an event started and ended.
+#' @param x A character vector of variables denoting the location that
+#' an event started and ended in the x dimension.
+#' @param x A character vector of variables denoting the location that
+#' an event started and ended in the y dimension.
+#' @param type A character vector denoting the event type.
+#' @param subtype A character vector denoting the event subtype.
 #' @param ... Unused, for extensibility.
 #'
 #' @return An event data.table
@@ -58,89 +58,84 @@ as_event.data.frame <-
   function(data,
            period = "period",
            team = "team",
-           entity_start = "entity_start",
-           entity_end = "entity_end",
-           time_start = "time_start",
-           time_end = "time_end",
-           x_start = "x_start",
-           x_end = "x_end",
-           y_start = "y_start",
-           y_end = "y_end",
+           entity = c("entity_start", "entity_end"),
+           time = c("time_start", "time_end"),
+           x = c("x_start", "x_end"),
+           y = c("y_start", "y_end"),
            type = "type",
            subtype = "subtype",
            ...) {
 
-  # Construct data.table object
-  #
-  # For `as_tracking()`, `data` is copied, converted to a list, then
-  # reassembled as a data.table
-  data <- unclass(data)
+    # Construct data.table object
+    #
+    # For `as_tracking()`, `data` is copied, converted to a list, then
+    # reassembled as a data.table
+    data <- unclass(data)
 
-  if (!is.list(data)) {
-    abort("`data` must be coercible to a list.")
-  }
+    if (!is.list(data)) {
+      abort("`data` must be coercible to a list.")
+    }
 
-  setDT(data)
+    setDT(data)
 
-  # Check for required columns and ball
-  required <- c(period, team, entity_start, entity_end,
-                time_start, time_end, x_start, x_end,
-                y_start, y_end, type, subtype) %in% names(data)
-  output   <- c("period", "team", "entity_start", "entity_end",
-                "time_start", "time_end", "x_start", "x_end",
-                "y_start", "y_end", "type", "subtype")
+    # Check for required columns and ball
+    required <- c(period, team, entity, time, x, y,
+                  type, subtype) %in% names(data)
+    output   <- c("period", "team", "entity_start", "entity_end",
+                  "time_start", "time_end", "x_start", "x_end",
+                  "y_start", "y_end", "type", "subtype")
 
-  if (!any(required)) {
-    abort(glue("Column not found: ", glue_collapse_vec(output[!required])))
-  }
+    if (!any(required)) {
+      abort(glue("Column not found: ", glue_collapse_vec(output[!required])))
+    }
 
-  # Mutate features
-  data <- data[
-    , c(output) :=
-      list(
-        as.integer(period),
-        as.character(team),
-        as.character(entity_start),
-        as.character(entity_end),
-        as.double(time_start),
-        as.double(time_end),
-        as.double(x_start),
-        as.double(x_end),
-        as.double(y_start),
-        as.double(y_end),
-        as.character(type),
-        as.character(subtype)
-      ),
-    env = list(
-      period       = period,
-      team         = team,
-      entity_start = entity_start,
-      entity_end   = entity_end,
-      time_start   = time_start,
-      time_end     = time_end,
-      x_start      = x_start,
-      x_end        = x_end,
-      y_start      = y_start,
-      y_end        = y_end,
-      type         = type,
-      subtype      = subtype
+    # Mutate features
+    data <- data[
+      , c(output) :=
+        list(
+          as.integer(period),
+          as.character(team),
+          as.character(entity_start),
+          as.character(entity_end),
+          as.double(time_start),
+          as.double(time_end),
+          as.double(x_start),
+          as.double(x_end),
+          as.double(y_start),
+          as.double(y_end),
+          as.character(type),
+          as.character(subtype)
+        ),
+      env = list(
+        period       = period,
+        team         = team,
+        entity_start = entity[1],
+        entity_end   = entity[2],
+        time_start   = time[1],
+        time_end     = time[2],
+        x_start      = x[1],
+        x_end        = x[2],
+        y_start      = y[1],
+        y_end        = y[2],
+        type         = type,
+        subtype      = subtype
+      )
+    ][
+      , c(output, setdiff(names(data), output)), with = FALSE
+    ]
+
+    # Set tracking class, key, and validate the return object
+    setattr(
+      data, name = "class", value = c("entity", class(data))
     )
-  ][
-    , c(output, setdiff(names(data), output)), with = FALSE
-  ]
 
-  # Set tracking class, key, and validate the return object
-  setattr(
-    data, name = "class", value = c("entity", class(data))
-  )
+    setkey(
+      data, entity_start, entity_end, team, time_start, time_end
+    )
 
-  setkey(
-    data, time_start, time_end
-  )
+    validate_event(data)
 
-  validate_event(data)
-
-}
+  }
 
 event <- function(period, team, entity_start, entity_end,
                   time_start, time_end, x_start, x_end,
@@ -188,8 +183,10 @@ validate_event <- function(x) {
   vec_assert(field(x, "type"),         character())
   vec_assert(field(x, "subtype"),      character())
 
-  if (!identical(key(x), c("time_start", "time_end"))) {
-    setkeyv(x, cols = c("time_start", "time_end"))
+  if (!identical(key(x), c("entity_start", "entity_end", "team",
+                           "time_start", "time_end"))) {
+    setkeyv(x, cols = c("entity_start", "entity_end",
+                        "team", "time_start", "time_end"))
   }
 
   x

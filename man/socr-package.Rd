@@ -4,7 +4,7 @@
 \name{socr-package}
 \alias{socr}
 \alias{socr-package}
-\title{socr: A framework for modeling soccer data}
+\title{socr: A framework for modeling soccer tracking and event data}
 \description{
 Provides a standardized framework for modeling tracking and event data in soccer via coercion to 'position' and 'action' class objects.
 }
