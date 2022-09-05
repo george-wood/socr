@@ -215,15 +215,16 @@ speed_ratio <- function(p, max_speed = 13) {
   }
 
   s <- speed(p)
-  (s[, "xy", drop = FALSE] / max_speed)**2
+  (s[, "xy"] / 13)**2
+
 }
 
-#' Calculate expected position of an entity
+#' Calculate expected location of an entity
 #'
 #' @param p A position vector.
 #
 #' @return An array with `length(p)` rows and columns "x" and "y".
-expected_position <- function(p) {
+expected_location <- function(p) {
 
   if (!is_position(p)) {
     abort("`p` must be a position vector.")
@@ -246,26 +247,15 @@ influence_radius <- function(p) {
     abort("`p` must be a position vector.")
   }
 
-  d <- distance(
-    p, from = setdiff(vec_unique(get_entity(p)), "ball"), to = "ball"
-  )[, , , "xy"]
+  players <- setdiff(get_entity(p), "ball")
+  d <- distance(p, from = players, to = "ball")[, , , "xy"]
+  ir <- pmin(4 + ((d^3) / ((18^3) / 6)), 10)
 
-  ri <- pmin(4 + ((d^3) / ((18^3) / 6)), 10)
-
-  matrix(
-    data = c(t(ri)),
-    ncol = 1,
-    dimnames = list(get_entity(p)[get_entity(p) != "ball"])
-  )
-
-  # as.matrix(
-  #   melt(
-  #     as.data.table(ri, keep.rownames = "entity"),
-  #     id.vars = "entity", variable.name = "time", variable.factor = FALSE
-  #   )[order(entity, time), .(entity, value, time = as.numeric(time))],
-  #   rownames = "entity"
-  # )
+  # return named vector
+  nm <- rep(row.names(ir), each = ncol(ir))
+  ir <- as.numeric(t(ir))
+  names(ir) <- nm
+  ir
 
 }
-
 
