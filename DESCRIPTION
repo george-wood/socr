@@ -17,9 +17,9 @@ Imports:
     data.table,
     glue,
     Matrix,
-    mvtnorm,
     pillar,
     purrr,
+    Rfast,
     rlang,
     vctrs
 Depends:
