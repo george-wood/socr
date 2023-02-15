@@ -1,6 +1,6 @@
 #' Model pitch control
 #'
-#' @param tracking A tracking data.table. See `as_tracking()`.
+#' @param tracking A tracking object. See `as_tracking()`.
 #' @param grid A numeric vector giving grid dimensions, e.g. c(100, 50)
 #' @param cells Number of cells at which to evaluate pitch control.
 #'
